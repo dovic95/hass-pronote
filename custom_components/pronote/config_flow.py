@@ -188,6 +188,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._user_inputs["qr_code_username"] = client.username
                 self._user_inputs["qr_code_password"] = client.password
                 self._user_inputs["qr_code_uuid"] = client.uuid
+                self._user_inputs["device_name"] = client.device_name
+                self._user_inputs["client_identifier"] = client.client_identifier
 
                 self.pronote_client = client
 
