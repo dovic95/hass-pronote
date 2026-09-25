@@ -136,7 +136,9 @@ def get_client_from_qr_code(data) -> pronotepy.Client | pronotepy.ParentClient |
         qr_code_url = data["qr_code_url"]
         qr_code_username = data["qr_code_username"]
         qr_code_password = data["qr_code_password"]
-        qr_code_uuid = data.get("uuid", data["qr_code_uuid"])
+        # Prefer the stable "qr_code_uuid" key; "uuid" is a legacy/stray key
+        # a past coordinator bug could have written, and must not shadow it.
+        qr_code_uuid = data.get("qr_code_uuid", data.get("uuid"))
         qr_code_account_pin = data.get("account_pin", None)
         qr_code_device_name = data.get("device_name", None)
         qr_code_client_identifier = data.get("client_identifier", None)

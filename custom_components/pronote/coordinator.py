@@ -174,17 +174,24 @@ class PronoteDataUpdateCoordinator(TimestampDataUpdateCoordinator):
         """Fetch all data from Pronote client."""
         config_data = self.config_entry.data
 
-        # Save possibly refreshed credentials
+        # Save possibly refreshed credentials.
+        #
+        # Written explicitly under the same key names get_client_from_qr_code
+        # reads, instead of blindly merging export_credentials()'s dict: that
+        # previously wrote a bare "uuid" key (export_credentials() has no
+        # "jeton" key, so that part of the old whitelist was a no-op) which
+        # pronote_helper.py's uuid resolution preferred over the stable
+        # "qr_code_uuid", silently shadowing it on every future login and
+        # letting the registered device identifier drift out of sync.
         new_creds = await self.hass.async_add_executor_job(client.export_credentials)
         new_data = self.config_entry.data.copy()
-        new_data.update({k: v for k, v in new_creds.items() 
-                         if k in ['jeton', 'uuid', 'client_identifier']})
-        
-        # + client.password (QR PIN ou jeton) 
+
         new_data["qr_code_password"] = client.password
         if new_creds.get("uuid"):
             new_data["qr_code_uuid"] = new_creds["uuid"]
-        
+        if new_creds.get("client_identifier"):
+            new_data["client_identifier"] = new_creds["client_identifier"]
+
         self.hass.config_entries.async_update_entry(self.config_entry, data=new_data)
         
         child_info = client.info
