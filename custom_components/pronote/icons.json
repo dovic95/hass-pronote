@@ -19,6 +19,7 @@
       "homework": { "default": "mdi:notebook-edit-outline" },
       "homework_period": { "default": "mdi:notebook-edit-outline" },
       "grades": { "default": "mdi:school-outline" },
+      "all_grades": { "default": "mdi:school-outline" },
       "grades_period": { "default": "mdi:school-outline" },
       "absences": { "default": "mdi:account-off-outline" },
       "absences_period": { "default": "mdi:account-off-outline" },

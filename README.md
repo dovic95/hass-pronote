@@ -105,6 +105,19 @@ For each previous period (e.g. `trimestre_1`), the following sensors are also cr
 
 The sensors are updated every 15 minutes.
 
+## Fork Skwila
+
+This fork (`2.8.0-skwila.x`, based on upstream 2.8.0) adds, for each child, an uncapped sensor
+`[...]_all_grades`, used by [Skwila](https://github.com/dovic95/Skwila):
+
+- state: number of grades; attribute `grades`: **all** grades of the school year (current period +
+  previous periods of the same type), sorted by date descending, de-duplicated by `id`, no 11-grade cap;
+- attributes `periods` (included period names) and `count`;
+- `grades` is excluded from the Recorder (16 KB attributes limit);
+- every formatted grade (sensors and `new_grade` event) now carries a stable `id` and its `period`.
+
+Existing sensors are unchanged.
+
 ## Cards
 
 Cards are available here: https://github.com/delphiki/lovelace-pronote

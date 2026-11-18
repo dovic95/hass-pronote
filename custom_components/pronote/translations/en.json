@@ -215,6 +215,7 @@
             "homework": { "name": "Homework" },
             "homework_period": { "name": "Period's homework" },
             "grades": { "name": "Grades" },
+            "all_grades": { "name": "All grades" },
             "grades_period": { "name": "Grades {period}" },
             "absences": { "name": "Absences" },
             "absences_period": { "name": "Absences {period}" },

@@ -11,6 +11,7 @@ import logging
 from pronotepy.dataClasses import Period as PronotePeriod
 from .pronote_helper import *
 from .pronote_formatter import *
+from .grades_merge import merge_grades
 import re
 from zoneinfo import ZoneInfo
 from slugify import slugify
@@ -186,6 +187,8 @@ class PronoteDataUpdateCoordinator(TimestampDataUpdateCoordinator):
             "lessons_period": [],
             "ical_url": None,
             "grades": [],
+            "all_grades": [],
+            "all_grades_periods": [],
             "averages": [],
             "homework": [],
             "homework_period": [],
@@ -585,6 +588,17 @@ class PronoteDataUpdateCoordinator(TimestampDataUpdateCoordinator):
                     ] = await self.hass.async_add_executor_job(
                         get_overall_average, period
                     )
+
+        # All grades of the school year: current period + previous periods of the same type
+        grade_lists = [self.data["grades"]]
+        included_periods = [raw_current_period.name] if raw_current_period is not None else []
+        for period in raw_previous_periods:
+            grade_lists.append(
+                self.data.get(f"grades_{slugify(period.name, separator='_')}")
+            )
+            included_periods.append(period.name)
+        self.data["all_grades"] = merge_grades(*grade_lists)
+        self.data["all_grades_periods"] = included_periods
 
         # Serialize periods to plain objects (drops back-references to client)
         self.data["periods"] = (

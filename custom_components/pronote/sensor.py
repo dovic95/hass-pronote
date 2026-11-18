@@ -88,6 +88,7 @@ async def async_setup_entry(
             coordinator, key="grades", name="Grades", period_key=current_period_key,
             translation_key="grades",
         ),
+        PronoteAllGradesSensor(coordinator),
         PronoteAbsensesSensor(
             coordinator, key="absences", name="Absences", period_key=current_period_key,
             translation_key="absences",
@@ -524,6 +525,32 @@ class PronoteGradesSensor(PronotePeriodRelatedSensor):
 
         attributes["grades"] = grades
 
+        return attributes
+
+
+class PronoteAllGradesSensor(PronoteGenericSensor):
+    """All grades of the school year (current + previous periods), without cap."""
+
+    # keep the Recorder under its 16 KB attributes limit
+    _unrecorded_attributes = frozenset({"grades"})
+
+    def __init__(self, coordinator: PronoteDataUpdateCoordinator) -> None:
+        super().__init__(
+            coordinator,
+            "all_grades",
+            "All grades",
+            len_or_none(coordinator.data["all_grades"]),
+            translation_key="all_grades",
+        )
+
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        attributes = super().extra_state_attributes
+        grades = self.coordinator.data["all_grades"] or []
+        attributes["grades"] = [format_grade(grade) for grade in grades]
+        attributes["periods"] = self.coordinator.data["all_grades_periods"]
+        attributes["count"] = len(grades)
         return attributes
 
 

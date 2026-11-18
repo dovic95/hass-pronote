@@ -75,7 +75,10 @@ def format_homework(homework) -> dict:
 
 
 def format_grade(grade) -> dict:
+    period = getattr(grade, "period", None)
     return {
+        "id": getattr(grade, "id", None),
+        "period": getattr(period, "name", None),
         "date": grade.date,
         "subject": grade.subject.name,
         "comment": grade.comment,
